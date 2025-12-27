@@ -93,6 +93,11 @@ private:
         HighCut
     };
     
+    void updatePeakFilter(const ChainSettings& chainSettings);
+    using Coefficients = Filter::CoefficientsPtr; // helper funtion that updates coefficients
+    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+    
+    
     void updateFilters();
 
     
