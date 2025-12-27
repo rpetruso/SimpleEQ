@@ -10,6 +10,15 @@
 
 #include <JuceHeader.h>
 
+struct ChainSettings
+{
+    float peakFreq { 0 }, peakGainInDecibels{ 0 }, peakQuality {1.f};
+    float lowCutFreq { 0 }, highCutFreq { 0 };
+    int lowCutSlope { 0 }, highCutSlope { 0 };
+};
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+
 //==============================================================================
 /**
 */
@@ -49,13 +58,14 @@ public:
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
 
+    
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); // declaring fn for parameter layout, list of all parameters
     
-    juce::AudioProcessorValueTreeState aptvs {*this, nullptr, "Parameters", createParameterLayout()};
+    juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
      //juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
@@ -67,6 +77,16 @@ private:
     using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>; //defines chain for whole mono signal path aka all 3 filters, locut->parametric->hicut
     
     MonoChain leftChain, rightChain;// for stereo processing
+    
+    enum ChainPositions
+    {
+        LowCut,
+        Peak,
+        HighCut
+    };
+    
+    void updateFilters();
+
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
