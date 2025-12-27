@@ -268,17 +268,6 @@ void SimpleEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // Peak Param
     updatePeakFilter(chainSettings);
     
-    juce::dsp::AudioBlock<float> block(buffer);
-    
-    auto leftBlock = block.getSingleChannelBlock(0);
-    auto rightBlock = block.getSingleChannelBlock(1);
-    
-    juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
-    juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
-    
-    leftChain.process(leftContext);
-    rightChain.process(rightContext);
-    
     //LowCut Params
     auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
                                                                                                        getSampleRate(),
@@ -379,6 +368,18 @@ void SimpleEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             break;
         }
     }
+    
+    juce::dsp::AudioBlock<float> block(buffer);
+    
+    auto leftBlock = block.getSingleChannelBlock(0);
+    auto rightBlock = block.getSingleChannelBlock(1);
+    
+    juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
+    juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
+    
+    leftChain.process(leftContext);
+    rightChain.process(rightContext);
+    
 }
 
 //==============================================================================
