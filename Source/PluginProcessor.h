@@ -74,7 +74,6 @@ public:
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); // declaring fn for parameter layout, list of all parameters
     
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
-     //juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
     
@@ -139,6 +138,8 @@ private:
         }
     }
     
+    void updateLowCutFilters(const ChainSettings& chainSettings);
+    void updateHighCutFilters(const ChainSettings& chainSettings);
     
     void updateFilters();
 
