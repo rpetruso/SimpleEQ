@@ -96,6 +96,59 @@ private:
     void updatePeakFilter(const ChainSettings& chainSettings);
     using Coefficients = Filter::CoefficientsPtr; // helper funtion that updates coefficients
     static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+
+    template<typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType& leftLowCut,
+                         const CoefficientType& cutCoefficients,
+                        const Slope& lowCutSlope)
+    {
+        //LowCut Params
+        leftLowCut.template setBypassed<0>(true);
+        leftLowCut.template setBypassed<1>(true);
+        leftLowCut.template setBypassed<2>(true);
+        leftLowCut.template setBypassed<3>(true);
+
+        switch( lowCutSlope )
+        {
+            case Slope_12:
+            {
+                *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<0>(false);
+                break;
+            }
+            case Slope_24:
+            {
+                *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<0>(false);
+                *leftLowCut.template get<1>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<1>(false);
+                break;
+            }
+            case Slope_36:
+            {
+                *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<0>(false);
+                *leftLowCut.template get<1>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<1>(false);
+                *leftLowCut.template get<2>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<2>(false);
+                break;
+            }
+            case Slope_48:
+            {
+                *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<0>(false);
+                *leftLowCut.template get<1>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<1>(false);
+                *leftLowCut.template get<2>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<2>(false);
+                *leftLowCut.template get<3>().coefficients = *cutCoefficients[0];
+                leftLowCut.template setBypassed<3>(false);
+                
+                break;
+            }
+        }
+    }
     
     
     void updateFilters();
