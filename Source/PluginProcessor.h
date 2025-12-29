@@ -27,6 +27,19 @@ struct ChainSettings
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
 
+using Filter = juce::dsp::IIR::Filter<float>; // vvv make public so can use for frequency response graph
+
+using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;  // run 4 times for 12, 24, 36, 48dB/oct filter
+
+using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>; //defines chain for whole mono signal path aka all 3 filters, locut->parametric->hicut
+
+enum ChainPositions
+{
+    LowCut,
+    Peak,
+    HighCut
+};
+ 
 //==============================================================================
 /**
 */
@@ -76,21 +89,10 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-    
-    using Filter = juce::dsp::IIR::Filter<float>;
-    
-    using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;  // run 4 times for 12, 24, 36, 48dB/oct filter
-    
-    using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>; //defines chain for whole mono signal path aka all 3 filters, locut->parametric->hicut
+
     
     MonoChain leftChain, rightChain;// for stereo processing
-    
-    enum ChainPositions
-    {
-        LowCut,
-        Peak,
-        HighCut
-    };
+
     
     void updatePeakFilter(const ChainSettings& chainSettings);
     using Coefficients = Filter::CoefficientsPtr; // helper funtion that updates coefficients
