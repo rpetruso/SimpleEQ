@@ -42,7 +42,9 @@ private:
     peakGainSlider,
     peakQualitySlider,
     lowCutFreqSlider,
-    highCutFreqSlider;
+    highCutFreqSlider,
+    lowCutSlopeSlider,
+    highCutSlopeSlider;
     
     std::vector<juce::Component*> getComps(); //give us all sliders in a vector
 
