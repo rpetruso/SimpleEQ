@@ -40,7 +40,7 @@ struct RotarySliderWithLabels : juce::Slider
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }
-    juce::String getDisplayString() const;
+    juce::String getDisplayString() const; // display subtext on sliders ex: 42Hz, 2.8kHz
 private:
     LookAndFeel lnf;
     
