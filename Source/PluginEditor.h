@@ -37,6 +37,14 @@ struct RotarySliderWithLabels : juce::Slider
         setLookAndFeel(nullptr);  // unset
     }
     
+    struct LabelPos     // data struct will hold normalized value, and string that is held at that normlaized position : 7'oclock and 5'ocloc
+    {
+        float pos;
+        juce::String label;
+    };
+    
+    juce::Array<LabelPos> labels;
+    
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }

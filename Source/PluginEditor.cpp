@@ -100,6 +100,35 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
                                       startAng,
                                       endAng,
                                       *this);
+    // data struct will hold normalized value, and string that is held at that normlaized position : 7'oclock and 5'oclock
+    // create bounding box that encompass text, then put center of bounding box at normalized position aruond sliders circuference
+    auto center = sliderBounds.toFloat().getCentre(); // center of slider bounds
+    auto radius = sliderBounds.getWidth() * 0.5f;  // radius of slider bounds from slider bounds
+    
+    g.setColour(Colour(0u, 172u, 1u));
+    g.setFont(getTextHeight());
+    
+    auto numChoices = labels.size(); // iterate through labels
+    for( int i=0 ; i < numChoices; ++i )
+    {
+        // convert normalzed pos into radian angle
+        auto pos = labels[i].pos;
+        jassert(0.f <= pos);
+        jassert(pos <= 1.f);
+        
+        auto ang = jmap(pos, 0.f, 1.f, startAng, endAng);
+                
+        auto c = center.getPointOnCircumference(radius + getTextHeight() * 0.5f + 1, ang); // text height away from center in direction of 7 o'clock angle
+        
+        Rectangle<float> r;
+        auto str = labels[i].label;
+        r.setSize(g.getCurrentFont().getStringWidth(str), getTextHeight());
+        r.setCentre(c);
+        r.setY(r.getY() + getTextHeight());
+        
+        g.drawFittedText(str, r.toNearestInt(), juce::Justification::centred, 1);
+    }
+    
 }
 
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
@@ -296,6 +325,10 @@ highCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", highCutSlope
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
+    peakFreqSlider.labels.add({0.f, "20Hz"});
+    peakFreqSlider.labels.add({1.f, "20kHz"});
+
+    
     for ( auto* comp : getComps() )
     {
         addAndMakeVisible(comp);
