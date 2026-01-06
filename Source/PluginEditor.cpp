@@ -367,7 +367,9 @@ void ResponseCurveComponent::paint (juce::Graphics& g)
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i])); // create lineto for every other magnitude
     }
     
-    g.setColour(Colours::blue);
+    leftChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY())); //when path generator creates path doesnt take into account                                                                                                           analyis bounding box origin
+    
+    g.setColour(Colours::skyblue);
     g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
     
     g.setColour(Colours::orange);
